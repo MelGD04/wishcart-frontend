@@ -8,83 +8,87 @@ export default function WelcomePage() {
   return (
     <div
       className="
-      flex flex-col md:flex-row items-center justify-between
-      min-h-screen
-      px-[2.5%]
-      pt-22
-      overflow-hidden
-      transition-colors duration-500
+        flex flex-col md:flex-row items-center justify-between
+        min-h-screen
+        px-[2.5%]
+        pt-22
+        overflow-hidden
+        transition-colors duration-500
       "
     >
-      {/* Contenedor del contenido principal */}
+      {/* Contenedor principal */}
       <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-5xl mx-auto gap-10">
         
         {/* Texto principal */}
-        <div className="flex-1 text-left md:pr-12 space-y-6 px-4 md:px-0">
-      {/* Título */}
-      <h1
-        className="
-          text-3xl sm:text-4xl md:text-5xl
-          font-extrabold leading-snug tracking-tight
-          flex flex-wrap items-center gap-2
-          justify-center md:justify-start text-center md:text-left
-        "
-      >
-        Organize your wishes,
-        <span
+        <div
           className="
-            text-blue-700 dark:text-blue-400
-            inline-flex items-baseline gap-1
+            flex-1 text-center md:text-left
+            space-y-6 px-4 md:px-0
+            flex flex-col justify-center items-center md:items-start
           "
-          style={{ color: "var(--color-text-main)" }}
         >
-          make them come true
-          <Gift
+          {/* Título */}
+          <h1
             className="
-              inline-block align-baseline
-              w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9
-              text-blue-700 dark:text-blue-400 animate-bounce
+              text-3xl sm:text-4xl md:text-5xl
+              font-extrabold leading-snug tracking-tight
+              flex flex-wrap items-center justify-center md:justify-start gap-2
             "
-            style={{ color: "var(--color-text-main)" }}
-          />
-        </span>
-      </h1>
+          >
+            Organize your wishes,
+            <span
+              className="
+                text-blue-700 dark:text-blue-400
+                inline-flex items-baseline gap-1
+              "
+              style={{ color: "var(--color-text-main)" }}
+            >
+              make them come true
+              <Gift
+                className="
+                  inline-block align-baseline
+                  w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9
+                  text-blue-700 dark:text-blue-400 animate-bounce
+                "
+                style={{ color: "var(--color-text-main)" }}
+              />
+            </span>
+          </h1>
 
-      {/* Descripción */}
-      <p
-        className="
-          text-base sm:text-lg md:text-xl
-          leading-relaxed
-          text-gray-700 dark:text-gray-300
-          text-center md:text-left
-          max-w-md md:max-w-lg mx-auto md:mx-0
-        "
-      >
-        With <strong>Wishcart</strong>, you can save your favorite products,
-        manage your budget, and prioritize your purchases — all in one place.
-      </p>
+          {/* Descripción */}
+          <p
+            className="
+              text-base sm:text-lg md:text-xl
+              leading-relaxed
+              text-gray-700 dark:text-gray-300
+              text-center md:text-left
+              max-w-md md:max-w-lg mx-auto md:mx-0
+            "
+          >
+            With <strong>Wishcart</strong>, you can save your favorite products,
+            manage your budget, and prioritize your purchases — all in one place.
+          </p>
 
-      {/* Botón */}
-      <div className="flex justify-center md:justify-start">
-        <button
-          onClick={() => router.push("/products")}
-          className="
-            px-5 py-2 sm:px-6 sm:py-3
-            bg-blue-600 hover:bg-blue-700
-            text-white font-semibold
-            rounded-full shadow-lg
-            transition-transform transform hover:scale-105
-            text-base sm:text-lg
-          "
-        >
-          Go to my products
-        </button>
-      </div>
-    </div>
+          {/* Botón */}
+          <div className="flex justify-center md:justify-start">
+            <button
+              onClick={() => router.push("/products")}
+              className="
+                px-5 py-2 sm:px-6 sm:py-3
+                bg-blue-600 hover:bg-blue-700
+                text-white font-semibold
+                rounded-full shadow-lg
+                transition-transform transform hover:scale-105
+                text-base sm:text-lg
+              "
+            >
+              Go to my products
+            </button>
+          </div>
+        </div>
 
-
-        {/* Ilustración / teléfono a la derecha */}
-        <div className="flex-1 flex justify-center md:justify-end mt-10 md:mt-0">
+        {/* Ilustración del teléfono (oculta en móvil) */}
+        <div className="hidden md:flex flex-1 justify-center md:justify-end mt-10 md:mt-0">
           <div
             className="
               relative flex justify-center items-start
