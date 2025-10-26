@@ -1,16 +1,11 @@
-export default {
-  darkMode: "class", // 
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: "class", // 👈 ¡ESTO ES CLAVE!
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        "my-light-blue": "#d0ebff",
-        "my-dark-gray": "#1a1a1a",
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };

@@ -8,17 +8,16 @@ export const metadata = {
 
 export default function ProductsPage() {
 	return (
-		<main className="min-h-screen pt-24 px-[2.5%] max-w-5xl mx-auto bg-blue-100 dark:bg-gray-900
-      text-gray-900 dark:text-gray-100">
-			<h1 className="flex items-center gap-3 text-2xl font-extrabold text-zinc-100 mb-6">
+		<main className="min-h-screen pt-24 px-[2.5%] max-w-5xl mx-auto">
+			<h1 className="flex items-center gap-3 text-2xl font-extrabold mb-6">
   			<Package className="w-6 h-6 text-blue-400 animate-bounce" />
   			My Products
 			</h1>
 
 			<section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 				<ProductCard />
-				<ProductCard title="Sneaker Classic" price="$199" />
-				<ProductCard title="Runner Pro" price="$349"  />
+				<ProductCard title="TLOU Bracelet" price="$??" priority="Low"/>
+				<ProductCard title="Earrings" price="$??"  />
 			</section>
 		</main>
 	)

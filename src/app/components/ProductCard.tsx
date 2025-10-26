@@ -11,8 +11,8 @@ type Props = {
 };
 
 export default function ProductCard({
-  title = "New Brand",
-  price = "$299",
+  title = "TLOU Tattoo",
+  price = "$6000",
   priority = "Medium",
   canBuy = false,
 }: Props) {

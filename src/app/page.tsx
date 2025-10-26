@@ -10,8 +10,6 @@ export default function WelcomePage() {
       className="
       flex flex-col md:flex-row items-center justify-between
       min-h-screen
-      bg-blue-100 dark:bg-gray-900
-      text-gray-900 dark:text-gray-100
       px-[2.5%]
       pt-22
       overflow-hidden
@@ -34,7 +32,7 @@ export default function WelcomePage() {
 
 
         {/* Descripción */}
-        <p className="text-lg md:text-xl text-gray-300 max-w-lg leading-relaxed">
+        <p className="text-lg md:text-xl max-w-lg leading-relaxed">
           With <strong>Wishcart</strong>, you can save your favorite products, manage your budget,
           and prioritize your purchases — all in one place.
         </p>
