@@ -15,13 +15,13 @@ export default function Navbar() {
 
   return (
     <>
-      {/* 🌐 Navbar Desktop */}
+      {/* Navbar Desktop */}
       <nav
         className={`
           hidden md:flex
           fixed top-4 left-1/2 -translate-x-1/2
           w-[95%] max-w-5xl
-          backdrop-blur-xl text-white 
+          backdrop-blur-lg text-white 
           rounded-full shadow-2xl border border-white/10
           py-3 px-6 justify-between items-center z-50
           transition-all duration-300
@@ -74,7 +74,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* 📱 Navbar Superior Móvil */}
+      {/* Navbar Superior Móvil */}
       <nav
         className={`
           md:hidden fixed top-3 left-1/2 -translate-x-1/2
@@ -105,7 +105,7 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* 📱 Tab Bar Inferior Móvil */}
+      {/* Tab Bar Inferior Móvil */}
       <nav
         className={`
           md:hidden fixed bottom-3 left-1/2 -translate-x-1/2
@@ -113,7 +113,7 @@ export default function Navbar() {
           flex justify-around items-center
           backdrop-blur-xl border border-white/10
           rounded-2xl shadow-xl z-50 py-2
-          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/30 text-gray-800"}
+          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/10 text-gray-900"}
         `}
       >
         {/* Home */}

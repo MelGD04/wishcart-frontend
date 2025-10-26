@@ -1,7 +1,7 @@
 @import "tailwindcss";
  
 html.light {
-  --bg-color: #91a1b6;
+  --bg-color: #e8e8e8;
   --text-color: #111827;
   --color-text-main:#006aff;
 }

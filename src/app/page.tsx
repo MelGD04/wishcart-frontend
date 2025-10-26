@@ -22,9 +22,11 @@ export default function WelcomePage() {
         {/* Texto principal */}
         <div
           className="
-            flex-1 text-center md:text-left
-            space-y-6 px-4 md:px-0
+            flex-1
             flex flex-col justify-center items-center md:items-start
+            text-center md:text-left
+            space-y-6 px-4 md:px-0
+            min-h-[calc(100vh-4rem)] md:min-h-0
           "
         >
           {/* Título */}
