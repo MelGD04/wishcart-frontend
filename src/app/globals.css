@@ -3,11 +3,13 @@
 html.light {
   --bg-color: #91a1b6;
   --text-color: #111827;
+  --color-text-main:#006aff;
 }
 
 html.dark {
   --bg-color: #0f172a;
   --text-color: #f9fafb;
+  --color-text-main:#60A5FA;
 }
 
 body {

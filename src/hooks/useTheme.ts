@@ -11,10 +11,10 @@ const ThemeProps = {
 type Theme = typeof ThemeProps.light | typeof ThemeProps.dark;
 
 export const useTheme = (defaultTheme: Theme = ThemeProps.light) => {
-  // ✅ Estado del tema (se inicializa vacío hasta montar para evitar hydration errors)
+  // Estado del tema (se inicializa vacío hasta montar para evitar hydration errors)
   const [theme, setTheme] = useState<Theme | null>(null);
 
-  // ✅ Detectar si está montado el componente (cliente)
+  // Detectar si está montado el componente (cliente)
   const [mounted, setMounted] = useState(false);
 
   // --- EFFECT 1: Leer el tema guardado en localStorage al montar
