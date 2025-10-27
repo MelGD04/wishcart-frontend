@@ -2,28 +2,36 @@
 
 import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "next/navigation";
-import { Sun, Moon, List, DollarSign, User, Home, Gift } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  List,
+  DollarSign,
+  User,
+  Home,
+} from "lucide-react";
 import { useState } from "react";
+import LoginModal from "@/modals/LoginModal";
 
 export default function Navbar() {
   const router = useRouter();
   const { isDark, toggleTheme, mounted } = useTheme("dark");
+  const [showLogin, setShowLogin] = useState(false);
 
   if (!mounted) return null;
 
   return (
     <>
-      {/* Navbar Desktop */}
+      {/* 🌐 NAVBAR DESKTOP */}
       <nav
         className={`
           hidden md:flex
           fixed top-4 left-1/2 -translate-x-1/2
           w-[95%] max-w-5xl
-          backdrop-blur-lg 
-          rounded-full shadow-2xl border border-white/10
+          backdrop-blur-lg rounded-full shadow-2xl border border-white/10
           py-3 px-6 justify-between items-center z-50
           transition-all duration-300
-          ${isDark ? "bg-white/10" : "bg-black/30"}
+          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/20 text-gray-900"}
         `}
       >
         {/* Logo */}
@@ -37,32 +45,32 @@ export default function Navbar() {
 
         {/* Navegación */}
         <div className="flex gap-6 text-sm font-medium items-center">
-          <a
+          <button
             onClick={() => router.push("/products")}
-            className="hover:text-blue-600 cursor-pointer"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             List
-          </a>
+          </button>
 
-          <a
-            href="/budget"
-            className="hover:text-blue-600"
+          <button
+            onClick={() => router.push("/budget")}
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             Budget
-          </a>
+          </button>
 
-          <a
+          <button
             onClick={() => setShowLogin(true)}
-            className="hover:text-blue-600 cursor-pointer"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             Login
-          </a>
+          </button>
 
-          {/* Botón de tema */}
+          {/* Tema */}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-zinc-700/40 transition-colors"
-            title="Cambiar tema"
+            title="Toggle theme"
           >
             {isDark ? (
               <Sun className="w-5 h-5 text-yellow-400" />
@@ -73,7 +81,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Navbar Superior Móvil */}
+      {/* 📱 NAVBAR SUPERIOR MÓVIL */}
       <nav
         className={`
           md:hidden fixed top-3 left-1/2 -translate-x-1/2
@@ -81,7 +89,7 @@ export default function Navbar() {
           flex justify-between items-center
           backdrop-blur-xl border border-white/10
           rounded-full shadow-md z-50 px-5 py-3
-          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/30 text-gray-800"}
+          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/20 text-gray-900"}
         `}
       >
         <h1
@@ -104,7 +112,7 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Tab Bar Inferior Móvil */}
+      {/* 📱 TAB BAR INFERIOR MÓVIL */}
       <nav
         className={`
           md:hidden fixed bottom-3 left-1/2 -translate-x-1/2
@@ -126,7 +134,7 @@ export default function Navbar() {
 
         <div className="h-6 w-px bg-gray-400/30" />
 
-        {/* Lista */}
+        {/* List */}
         <button
           onClick={() => router.push("/products")}
           className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
@@ -137,7 +145,7 @@ export default function Navbar() {
 
         <div className="h-6 w-px bg-gray-400/30" />
 
-        {/* Presupuesto */}
+        {/* Budget */}
         <button
           onClick={() => router.push("/budget")}
           className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
@@ -148,7 +156,7 @@ export default function Navbar() {
 
         <div className="h-6 w-px bg-gray-400/30" />
 
-        {/* Perfil / Login */}
+        {/* Profile/Login */}
         <button
           onClick={() => setShowLogin(true)}
           className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
@@ -158,6 +166,7 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
 }
