@@ -4,11 +4,9 @@ import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "next/navigation";
 import { Sun, Moon, List, DollarSign, User, Home, Gift } from "lucide-react";
 import { useState } from "react";
-import LoginModal from "./LoginModal";
 
 export default function Navbar() {
   const router = useRouter();
-  const [showLogin, setShowLogin] = useState(false);
   const { isDark, toggleTheme, mounted } = useTheme("dark");
 
   if (!mounted) return null;
@@ -160,7 +158,6 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
 }

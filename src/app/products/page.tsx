@@ -1,5 +1,7 @@
 import { Package } from "lucide-react";
 import ProductCard from "@/cards/ProductCard"; 
+import AddProductCard from "@/cards/AddProductCard";
+import AddProductModal from "@/modals/AddProductModal";
 
 export default function ProductsPage() {
   return (
@@ -15,8 +17,9 @@ export default function ProductsPage() {
   		<ProductCard title="TLOU Bracelet" price="$??" priority="Low" />
   		<ProductCard title="Earrings" price="$??" />
   		<ProductCard title="Smartwatch" price="$??" priority="High" />
-		<ProductCard title="algo mas" price="$??"/>
-	</section>
+		  <ProductCard title="algo mas" price="$??"/>
+      <AddProductCard />
+	  </section>
 
     </main>
   );
