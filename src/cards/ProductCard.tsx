@@ -36,9 +36,16 @@ export default function ProductCard({
         relative flex flex-col gap-3
         p-3 sm:p-4
         w-full
-        bg-zinc-800 rounded-xl shadow-lg hover:shadow-2xl
+        rounded-xl shadow-lg hover:shadow-2xl
         transition-all duration-300 hover:scale-[1.02]
       "
+      style={{
+    backgroundColor: "var(--card-bg)",
+    border: "1px solid var(--card-border)",
+    boxShadow: `0 8px 20px var(--card-shadow)`,
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+  }}
     >
       {/* Imagen */}
       <div
@@ -82,7 +89,7 @@ export default function ProductCard({
       </div>
 
       {/* Título */}
-      <div className="w-full text-sm sm:text-base font-semibold text-zinc-200 capitalize truncate text-center sm:text-left">
+      <div className="w-full text-sm sm:text-base font-semibold capitalize truncate text-center sm:text-left">
         {title}
       </div>
 
@@ -117,7 +124,7 @@ export default function ProductCard({
 
       {/* Precio y botón */}
       <div className="flex items-center gap-2 mt-2">
-        <div className="text-sm sm:text-base font-bold text-zinc-200 whitespace-nowrap">
+        <div className="text-sm sm:text-base font-bold whitespace-nowrap">
           {price}
         </div>
         <button

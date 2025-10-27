@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "next/navigation";
-import { Sun, Moon, List, DollarSign, User, Home } from "lucide-react";
+import { Sun, Moon, List, DollarSign, User, Home, Gift } from "lucide-react";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
 
@@ -21,7 +21,7 @@ export default function Navbar() {
           hidden md:flex
           fixed top-4 left-1/2 -translate-x-1/2
           w-[95%] max-w-5xl
-          backdrop-blur-lg text-white 
+          backdrop-blur-lg 
           rounded-full shadow-2xl border border-white/10
           py-3 px-6 justify-between items-center z-50
           transition-all duration-300
@@ -31,7 +31,8 @@ export default function Navbar() {
         {/* Logo */}
         <h1
           onClick={() => router.push("/")}
-          className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 cursor-pointer"
+          className="text-2xl font-extrabold text-blue-700 dark:text-blue-400 cursor-pointer"
+          style={{ color: "var(--color-text-main)" }}
         >
           Wishcart
         </h1>
@@ -40,21 +41,21 @@ export default function Navbar() {
         <div className="flex gap-6 text-sm font-medium items-center">
           <a
             onClick={() => router.push("/products")}
-            className="text-gray-800 dark:text-gray-200 hover:text-blue-600 cursor-pointer"
+            className="hover:text-blue-600 cursor-pointer"
           >
             List
           </a>
 
           <a
             href="/budget"
-            className="text-gray-800 dark:text-gray-200 hover:text-blue-600"
+            className="hover:text-blue-600"
           >
             Budget
           </a>
 
           <a
             onClick={() => setShowLogin(true)}
-            className="text-gray-800 dark:text-gray-200 hover:text-blue-600 cursor-pointer"
+            className="hover:text-blue-600 cursor-pointer"
           >
             Login
           </a>

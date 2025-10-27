@@ -15,6 +15,7 @@ export default function ProductsPage() {
   		<ProductCard title="TLOU Bracelet" price="$??" priority="Low" />
   		<ProductCard title="Earrings" price="$??" />
   		<ProductCard title="Smartwatch" price="$??" priority="High" />
+		<ProductCard title="algo mas" price="$??"/>
 	</section>
 
     </main>

@@ -62,7 +62,6 @@ export default function WelcomePage() {
             className="
               text-base sm:text-lg md:text-xl
               leading-relaxed
-              text-gray-700 dark:text-gray-300
               text-center md:text-left
               max-w-md md:max-w-lg mx-auto md:mx-0
             "

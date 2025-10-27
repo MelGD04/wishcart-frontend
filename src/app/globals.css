@@ -4,12 +4,18 @@ html.light {
   --bg-color: #e8e8e8;
   --text-color: #111827;
   --color-text-main:#006aff;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.4);
+  --card-shadow: rgba(0, 0, 0, 0.1);
 }
 
 html.dark {
   --bg-color: #0f172a;
   --text-color: #f9fafb;
   --color-text-main:#60A5FA;
+  --card-bg: rgba(39, 39, 42, 0.6);
+  --card-border: rgba(63, 63, 70, 0.6);
+  --card-shadow: rgba(0, 0, 0, 0.3);
 }
 
 body {
