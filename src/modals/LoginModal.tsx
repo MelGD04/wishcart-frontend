@@ -18,23 +18,38 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+  e.preventDefault();
+  setLoading(true);
+  setMessage("");
+  try {
+    const res = await axios.post("http://localhost:5000/auth/login", formData);
 
-    try {
-      const res = await axios.post("http://localhost:5000/auth/login", formData);
+    // Guardamos el usuario y el token correctamente
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: res.data.id,
+        fullName: res.data.fullName,
+        email: res.data.email,
+      })
+    );
+    localStorage.setItem("token", res.data.token);
 
-      localStorage.setItem("token", res.data.token); // Guarda el token
-      setMessage("✅ Login exitoso");
-      setTimeout(() => onClose(), 1000);
-    } catch (error: any) {
-      console.error(error);
-      setMessage("❌ Error al iniciar sesión: " + (error.response?.data?.message || "Servidor no disponible"));
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log("✅ Usuario guardado en localStorage:", res.data);
+
+    setMessage("✅ Login exitoso");
+    setTimeout(() => onClose(), 1000);
+  } catch (error: any) {
+    console.error(error);
+    setMessage(
+      "❌ Error al iniciar sesión: " +
+        (error.response?.data?.message || "Servidor no disponible")
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
