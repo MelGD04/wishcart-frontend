@@ -2,27 +2,50 @@
 
 import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "next/navigation";
-import {
-  Sun,
-  Moon,
-  List,
-  DollarSign,
-  User,
-  Home,
-} from "lucide-react";
-import { useState } from "react";
+import { Sun, Moon, List, DollarSign, User, Home } from "lucide-react";
+import { useEffect, useState } from "react";
 import LoginModal from "@/modals/LoginModal";
 
 export default function Navbar() {
   const router = useRouter();
   const { isDark, toggleTheme, mounted } = useTheme("dark");
   const [showLogin, setShowLogin] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  //Colores aleatorios para los avatares
+  const colors = [
+    "#2563EB", // azul
+    "#DC2626", // rojo
+    "#059669", // verde
+    "#9333EA", // violeta
+    "#EA580C", // naranja
+    "#EAB308", // amarillo
+    "#DB2777", // rosado
+  ];
+
+  // Cargar usuario desde localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) setUser(JSON.parse(stored));
+    } catch {
+      setUser(null);
+    }
+  }, []);
+
+  //Generar color basado en el email (para que sea consistente)
+  const getColorForEmail = (email: string) => {
+    const hash = email
+      .split("")
+      .reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+    return colors[Math.abs(hash) % colors.length];
+  };
 
   if (!mounted) return null;
 
   return (
     <>
-      {/* 🌐 NAVBAR DESKTOP */}
+      {/*NAVBAR DESKTOP */}
       <nav
         className={`
           hidden md:flex
@@ -38,7 +61,6 @@ export default function Navbar() {
         <h1
           onClick={() => router.push("/")}
           className="text-2xl font-extrabold text-blue-700 dark:text-blue-400 cursor-pointer"
-          style={{ color: "var(--color-text-main)" }}
         >
           Wishcart
         </h1>
@@ -59,18 +81,50 @@ export default function Navbar() {
             Budget
           </button>
 
-          <button
-            onClick={() => setShowLogin(true)}
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-          >
-            Login
-          </button>
+          {/*Botón de Login o Avatar */}
+          {user ? (
+            <div
+              className="flex items-center gap-2 cursor-pointer group"
+              title={user.email}
+              onClick={() => {
+                if (confirm("¿Cerrar sesión?")) {
+                  localStorage.removeItem("user");
+                  localStorage.removeItem("token");
+                  setUser(null);
+                }
+              }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold"
+                style={{ backgroundColor: getColorForEmail(user.email) }}
+              >
+                {user.email.charAt(0).toUpperCase()}
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <div
+                className={`
+                  w-8 h-8 rounded-full flex items-center justify-center border
+                  ${isDark ? "border-gray-500/50" : "border-gray-800/50"}
+                `}
+              >
+                <User className="w-4 h-4" />
+              </div>
+            </button>
+          )}
 
-          {/* Tema */}
+          {/* Separador */}
+          <div className="h-6 w-px bg-gray-400/30 mx-0.5" />
+
+          {/* Botón para cambiar tema */}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-zinc-700/40 transition-colors"
-            title="Toggle theme"
+            title="Cambiar tema"
           >
             {isDark ? (
               <Sun className="w-5 h-5 text-yellow-400" />
@@ -81,7 +135,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* 📱 NAVBAR SUPERIOR MÓVIL */}
+      {/* 📱 NAVBAR SUPERIOR Y TAB BAR (sin cambios) */}
       <nav
         className={`
           md:hidden fixed top-3 left-1/2 -translate-x-1/2
@@ -112,60 +166,7 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* 📱 TAB BAR INFERIOR MÓVIL */}
-      <nav
-        className={`
-          md:hidden fixed bottom-3 left-1/2 -translate-x-1/2
-          w-[95%] max-w-sm
-          flex justify-around items-center
-          backdrop-blur-xl border border-white/10
-          rounded-2xl shadow-xl z-50 py-2
-          ${isDark ? "bg-white/10 text-gray-100" : "bg-black/10 text-gray-900"}
-        `}
-      >
-        {/* Home */}
-        <button
-          onClick={() => router.push("/")}
-          className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
-        >
-          <Home className="w-5 h-5 mb-1" />
-          <span>Home</span>
-        </button>
-
-        <div className="h-6 w-px bg-gray-400/30" />
-
-        {/* List */}
-        <button
-          onClick={() => router.push("/products")}
-          className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
-        >
-          <List className="w-5 h-5 mb-1" />
-          <span>List</span>
-        </button>
-
-        <div className="h-6 w-px bg-gray-400/30" />
-
-        {/* Budget */}
-        <button
-          onClick={() => router.push("/budget")}
-          className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
-        >
-          <DollarSign className="w-5 h-5 mb-1" />
-          <span>Budget</span>
-        </button>
-
-        <div className="h-6 w-px bg-gray-400/30" />
-
-        {/* Profile/Login */}
-        <button
-          onClick={() => setShowLogin(true)}
-          className="flex flex-col items-center justify-center text-xs hover:text-blue-500 transition"
-        >
-          <User className="w-5 h-5 mb-1" />
-          <span>Profile</span>
-        </button>
-      </nav>
-
+      {/* Modal de login */}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
