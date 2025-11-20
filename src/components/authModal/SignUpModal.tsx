@@ -1,63 +1,79 @@
 "use client";
 
-import { UserPlus, X } from "lucide-react";
-import { useState } from "react";
-import axios from "axios";
-import LoginModal from "./LoginModal";
+import React, { JSX, useState } from "react";
+import { X, UserPlus } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import type { AuthUser } from "@/context/AuthContext";
 
-export default function SignUpModal({ onClose }: { onClose: () => void }) {
-  const [showLogin, setShowLogin] = useState(false);
-  const [formData, setFormData] = useState({
+interface RegisterModalProps {
+  onClose: () => void;
+  setShowLogin: (v: boolean) => void;
+}
+
+export default function RegisterModal({ onClose, setShowLogin }: RegisterModalProps): React.ReactElement {
+  const { login } = useAuth();
+
+  const [formData, setFormData] = useState<{ fullName: string; email: string; password: string }>({
     fullName: "",
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  // Si se abre el login, mostrar el modal de login
-  if (showLogin) return <LoginModal onClose={() => setShowLogin(false)} />;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      // ⚙️ Enviar datos al backend NestJS (ajusta el puerto si usas otro)
-      const res = await axios.post("http://localhost:5000/auth/register", {
+      if (!formData.fullName || !formData.email || !formData.password) {
+        throw new Error("All fields are required.");
+      }
+
+      // 🔥 Simulación de registro (pon tu API luego)
+      const fakeUser: AuthUser = {
+        id: Math.floor(Math.random() * 1000),
         fullName: formData.fullName,
         email: formData.email,
-        password: formData.password,
-      });
+      };
 
-      setMessage("✅ Usuario registrado correctamente.");
-      setTimeout(() => {
-        setShowLogin(true); // ir al login después del registro
-      }, 1000);
-    } catch (error: any) {
-      console.error(error);
-      setMessage("❌ Error al registrar usuario: " + (error.response?.data?.message || "Servidor no disponible"));
-    } finally {
-      setLoading(false);
+      // Guarda el usuario en contexto
+      login(fakeUser);
+
+      onClose(); // cerrar modal
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      setMessage(errMsg || "Registration failed");
     }
+
+    setLoading(false);
+  };
+
+  // 👉 Cerrar clicando fuera
+  const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.id === "modal-bg") onClose();
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
+    <div
+      id="modal-bg"
+      onClick={handleBackgroundClick}
+      className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-fadeIn"
+    >
       <div
         className="
           relative w-[90%] max-w-md p-6 rounded-2xl shadow-2xl
           border border-gray-200 dark:border-zinc-700
           bg-white/80 dark:bg-zinc-900/90 backdrop-blur-lg
-          transition-all duration-300
+          transition-all duration-300 animate-popup
         "
       >
         {/* Botón de cerrar */}
@@ -119,14 +135,22 @@ export default function SignUpModal({ onClose }: { onClose: () => void }) {
 
           {/* Mensaje de estado */}
           {message && (
-            <p className="text-sm text-center mt-2 text-red-500 dark:text-gray-300">{message}</p>
+            <p className="text-sm text-center mt-2 text-red-500 dark:text-gray-300">
+              {message}
+            </p>
           )}
 
           <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"
-              onClick={() => setShowLogin(true)}
-              className="px-4 py-2 text-sm rounded-full border border-gray-400 hover:bg-gray-200 dark:hover:bg-zinc-800 transition"
+              onClick={() => {
+                onClose();
+                setShowLogin(true);
+              }}
+              className="
+                px-4 py-2 text-sm rounded-full border border-gray-400
+                hover:bg-gray-200 dark:hover:bg-zinc-800 transition
+              "
             >
               Back to LogIn
             </button>
@@ -134,7 +158,10 @@ export default function SignUpModal({ onClose }: { onClose: () => void }) {
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md transition disabled:opacity-50"
+              className="
+                px-5 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white
+                rounded-full shadow-md transition disabled:opacity-50
+              "
             >
               {loading ? "Registering..." : "SignUp"}
             </button>

@@ -1,17 +1,19 @@
-import "./globals.css";
-import Navbar from "./components/navbar";
+"use client";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "../components/nav/navbar";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="transition-colors duration-300 ">
-        <Navbar />
-        <main className="min-h-screen w-full">{children}</main>
+      <body>
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );
 }
+

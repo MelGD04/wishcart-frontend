@@ -9,29 +9,31 @@ export default function AddProductCard() {
 
   return (
     <>
-      {/* ✅ Card para agregar nuevo producto */}
-      <div
+      <button
         onClick={() => setShowModal(true)}
         className="
-          flex flex-col items-center justify-center gap-3
-          p-4 rounded-xl border-2 border-dashed cursor-pointer
-          hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-zinc-800
-          transition-all duration-300
+          relative flex flex-col items-center justify-center gap-3
+          p-3 sm:p-4 w-full
+          rounded-xl shadow-lg hover:shadow-2xl
+          border border-dashed cursor-pointer
+          transition-all duration-300 hover:scale-[1.02]
         "
         style={{
           backgroundColor: "var(--card-bg)",
           borderColor: "var(--card-border)",
-          backdropFilter: "blur(10px)",
+          boxShadow: `0 8px 20px var(--card-shadow)`,
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
       >
-        <PlusCircle className="w-10 h-10 text-blue-500" />
-        <span className="text-sm font-medium">
+        <PlusCircle className="w-10 h-10 text-blue-500 opacity-70" />
+        <span className="text-sm sm:text-base font-medium opacity-80">
           Add New Product
         </span>
-      </div>
+      </button>
 
-      {/* Modal */}
       {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
     </>
   );
 }
+
