@@ -4,7 +4,11 @@ import { useState } from "react";
 import { PlusCircle } from "lucide-react";
 import AddProductModal from "@/modals/AddProductModal";
 
-export default function AddProductCard() {
+export default function AddProductCard({
+  onAdd,
+}: {
+  onAdd?: (p: { title: string; price: string; priority: string }) => void;
+}) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -32,7 +36,14 @@ export default function AddProductCard() {
         </span>
       </button>
 
-      {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <AddProductModal
+          onClose={() => setShowModal(false)}
+          onAdd={(p) => {
+            if (onAdd) onAdd(p);
+          }}
+        />
+      )}
     </>
   );
 }

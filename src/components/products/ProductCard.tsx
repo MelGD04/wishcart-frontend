@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { ShoppingCart, Check, Trash } from "lucide-react";
 
 type Props = {
+  name?: string;
   title?: string;
   price?: string | number;
   priority?: "High" | "Medium" | "Low";
@@ -11,11 +12,13 @@ type Props = {
 };
 
 export default function ProductCard({
-  title = "TLOU Tattoo",
-  price = "$6000",
-  priority = "Medium",
-  canBuy = false,
+  name,
+  title,
+  price,
+  priority,
+  canBuy,
 }: Props) {
+  const displayTitle = name ?? title ?? "";
   const [image, setImage] = useState<string | null>(null);
   const [bought, setBought] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,44 +92,59 @@ export default function ProductCard({
       </div>
 
       {/* Título */}
-      <div className="w-full text-sm sm:text-base font-semibold capitalize truncate text-center sm:text-left">
-        {title}
-      </div>
+      {displayTitle ? (
+        <div className="w-full text-sm sm:text-base font-semibold capitalize truncate text-center sm:text-left">
+          {displayTitle}
+        </div>
+      ) : null}
 
-      {/* Prioridad y Buy Now */}
-      <div className="flex justify-between items-center gap-2 mt-1">
-        <span
-          className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
-            ${
-              priority === "High"
-                ? "border-green-500 text-green-500"
-                : priority === "Medium"
-                ? "border-yellow-400 text-yellow-400"
-                : "border-red-500 text-red-500"
-            }
-          `}
-        >
-          {priority}
-        </span>
+      {/* Prioridad y Buy Now (solo si vienen) */}
+      {(priority || typeof canBuy !== "undefined") && (
+        <div className="flex justify-between items-center gap-2 mt-1">
+          {priority ? (
+            <span
+              className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
+                ${
+                  priority === "High"
+                    ? "border-green-500 text-green-500"
+                    : priority === "Medium"
+                    ? "border-yellow-400 text-yellow-400"
+                    : "border-red-500 text-red-500"
+                }
+              `}
+            >
+              {priority}
+            </span>
+          ) : null}
 
-        <span
-          className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
-            ${
-              canBuy
-                ? "border-green-600 text-green-600"
-                : "border-gray-500 text-gray-500"
-            }
-          `}
-        >
-          {canBuy ? "Buy Now" : "Not Available"}
-        </span>
-      </div>
+          {typeof canBuy !== "undefined" ? (
+            <span
+              className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
+                ${
+                  canBuy
+                    ? "border-green-600 text-green-600"
+                    : "border-gray-500 text-gray-500"
+                }
+              `}
+            >
+              {canBuy ? "Buy Now" : "Not Available"}
+            </span>
+          ) : null}
+        </div>
+      )}
 
       {/* Precio y botón */}
       <div className="flex items-center gap-2 mt-2">
-        <div className="text-sm sm:text-base font-bold whitespace-nowrap">
-          {price}
-        </div>
+        {typeof price !== "undefined" && (
+          <div className="text-sm sm:text-base font-bold whitespace-nowrap">
+            {typeof price === "number"
+              ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(price)
+              : // try to parse numeric strings, otherwise render raw
+                Number(price) && !Number.isNaN(Number(price))
+              ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(price))
+              : price}
+          </div>
+        )}
         <button
           onClick={() => setBought(!bought)}
           className={`flex items-center justify-center gap-2 px-2 sm:px-3 py-2 w-full text-[10px] sm:text-xs font-medium rounded-md shadow-lg transition-transform duration-300 ${

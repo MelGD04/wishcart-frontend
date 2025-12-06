@@ -3,6 +3,7 @@
 import React, { JSX, useState } from "react";
 import { X, UserPlus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import api from "@/lib/axios";
 import type { AuthUser } from "@/context/AuthContext";
 
 interface RegisterModalProps {
@@ -37,19 +38,31 @@ export default function RegisterModal({ onClose, setShowLogin }: RegisterModalPr
         throw new Error("All fields are required.");
       }
 
-      // 🔥 Simulación de registro (pon tu API luego)
-      const fakeUser: AuthUser = {
-        id: Math.floor(Math.random() * 1000),
+      // Call backend register
+      const res = await api.post("/auth/register", {
         fullName: formData.fullName,
         email: formData.email,
+        password: formData.password,
+      });
+
+      const token = res.data?.access_token;
+      if (!token) throw new Error("Invalid register response");
+
+      const userToSave: AuthUser = {
+        id: 0,
+        fullName: formData.fullName,
+        email: formData.email,
+        token,
       };
 
-      // Guarda el usuario en contexto
-      login(fakeUser);
-
-      onClose(); // cerrar modal
+      login(userToSave);
+      onClose();
     } catch (error: unknown) {
-      const errMsg = error instanceof Error ? error.message : String(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const anyErr = error as any;
+      const serverMessage = anyErr?.response?.data?.message || anyErr?.response?.data || null;
+      const errMsg =
+        serverMessage || (error instanceof Error ? error.message : String(error));
       setMessage(errMsg || "Registration failed");
     }
 

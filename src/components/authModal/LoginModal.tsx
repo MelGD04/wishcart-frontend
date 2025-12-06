@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import api from "@/lib/axios";
 import type { AuthUser } from "@/context/AuthContext";
 
 interface LoginModalProps {
@@ -37,17 +38,31 @@ export default function LoginModal({ onClose, setShowSignUp }: LoginModalProps):
         throw new Error("Please enter your email and password.");
       }
 
-      // Resultado simulado
-      const fakeUser: AuthUser = {
-        id: 1,
-        fullName: "Demo User",
+      // Call backend login
+      const res = await api.post("/auth/login", {
         email: formData.email,
+        password: formData.password,
+      });
+
+      const token = res.data?.access_token;
+      if (!token) throw new Error("Invalid login response");
+
+      const userToSave: AuthUser = {
+        id: 0,
+        fullName: formData.email,
+        email: formData.email,
+        token,
       };
 
-      login(fakeUser); // ⬅️ Actualiza el context
-      onClose(); // Cierra modal
+      login(userToSave);
+      onClose();
     } catch (error: unknown) {
-      const errMsg = error instanceof Error ? error.message : String(error);
+      // Try to extract useful message from Axios error if present
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const anyErr = error as any;
+      const serverMessage = anyErr?.response?.data?.message || anyErr?.response?.data || null;
+      const errMsg =
+        serverMessage || (error instanceof Error ? error.message : String(error));
       setMessage(errMsg || "Login failed");
     }
 
