@@ -7,19 +7,37 @@ export default function AddProductModal({
   onAdd,
 }: {
   onClose: () => void;
-  onAdd?: (p: { title: string; price: string; priority: string }) => Promise<void> | void;
+  onAdd?: (
+    p: { title: string; price: string; priority: string; imageUrl?: string }
+  ) => Promise<void> | void;
 }) {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [priority, setPriority] = useState("Medium");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return setImagePreview(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const payload = { title, price, priority };
+    const payload: { title: string; price: string; priority: string; imageUrl?: string } = {
+      title,
+      price,
+      priority,
+    };
+    if (imagePreview) payload.imageUrl = imagePreview;
     try {
       if (onAdd) await onAdd(payload as any);
       onClose();

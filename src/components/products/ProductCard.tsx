@@ -4,34 +4,79 @@ import { useState, useRef } from "react";
 import { ShoppingCart, Check, Trash } from "lucide-react";
 
 type Props = {
+  id: number;
   name?: string;
   title?: string;
   price?: string | number;
+  imageUrl?: string;
   priority?: "High" | "Medium" | "Low";
   canBuy?: boolean;
 };
 
 export default function ProductCard({
+  id,
   name,
   title,
   price,
+  imageUrl,
   priority,
   canBuy,
 }: Props) {
   const displayTitle = name ?? title ?? "";
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(imageUrl ?? null);
   const [bought, setBought] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => fileInputRef.current?.click();
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const url = URL.createObjectURL(e.target.files[0]);
-      setImage(url);
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      setImage(dataUrl);
+
+      try {
+        const token = JSON.parse(localStorage.getItem("user")!)?.token;
+        if (!token) return;
+
+        await fetch(`http://localhost:5000/products/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ imageUrl: dataUrl }),
+        });
+      } catch (err) {
+        console.error("Failed to persist image", err);
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
-  const handleImageRemove = () => setImage(null);
+  const handleImageRemove = async () => {
+    setImage(null);
+
+    try {
+      const token = JSON.parse(localStorage.getItem("user")!)?.token;
+      if (!token) return;
+
+      await fetch(`http://localhost:5000/products/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ imageUrl: null }),
+      });
+    } catch (err) {
+      console.error("Failed to remove image", err);
+    }
+  };
 
   return (
     <div
@@ -43,12 +88,12 @@ export default function ProductCard({
         transition-all duration-300 hover:scale-[1.02]
       "
       style={{
-    backgroundColor: "var(--card-bg)",
-    border: "1px solid var(--card-border)",
-    boxShadow: `0 8px 20px var(--card-shadow)`,
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
-  }}
+        backgroundColor: "var(--card-bg)",
+        border: "1px solid var(--card-border)",
+        boxShadow: `0 8px 20px var(--card-shadow)`,
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
     >
       {/* Imagen */}
       <div
@@ -98,10 +143,10 @@ export default function ProductCard({
         </div>
       ) : null}
 
-      {/* Prioridad y Buy Now (solo si vienen) */}
+      {/* Prioridad y Buy Now */}
       {(priority || typeof canBuy !== "undefined") && (
         <div className="flex justify-between items-center gap-2 mt-1">
-          {priority ? (
+          {priority && (
             <span
               className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
                 ${
@@ -115,9 +160,9 @@ export default function ProductCard({
             >
               {priority}
             </span>
-          ) : null}
+          )}
 
-          {typeof canBuy !== "undefined" ? (
+          {typeof canBuy !== "undefined" && (
             <span
               className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 bg-transparent
                 ${
@@ -129,7 +174,7 @@ export default function ProductCard({
             >
               {canBuy ? "Buy Now" : "Not Available"}
             </span>
-          ) : null}
+          )}
         </div>
       )}
 
@@ -139,12 +184,12 @@ export default function ProductCard({
           <div className="text-sm sm:text-base font-bold whitespace-nowrap">
             {typeof price === "number"
               ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(price)
-              : // try to parse numeric strings, otherwise render raw
-                Number(price) && !Number.isNaN(Number(price))
+              : Number(price)
               ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(price))
               : price}
           </div>
         )}
+
         <button
           onClick={() => setBought(!bought)}
           className={`flex items-center justify-center gap-2 px-2 sm:px-3 py-2 w-full text-[10px] sm:text-xs font-medium rounded-md shadow-lg transition-transform duration-300 ${
@@ -153,11 +198,7 @@ export default function ProductCard({
               : "bg-gradient-to-tr from-blue-400 via-blue-500 to-blue-700 text-white hover:scale-105"
           }`}
         >
-          {bought ? (
-            <Check className="w-4 h-4" />
-          ) : (
-            <ShoppingCart className="w-4 h-4" />
-          )}
+          {bought ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
           {bought ? "Bought" : "Add"}
         </button>
       </div>

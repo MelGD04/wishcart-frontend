@@ -11,6 +11,7 @@ type Product = {
   id: number;
   title: string;
   price: string | number;
+  imageUrl?: string;
   priority: "High" | "Medium" | "Low";
   canBuy: boolean;
 };
@@ -21,7 +22,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   // handler to add a new product from AddProductModal
-  const addProduct = async (p: { title: string; price: string; priority: string }) => {
+  const addProduct = async (p: { title: string; price: string; priority: string; imageUrl?: string }) => {
     try {
       if (!user?.token) {
         // fallback to local update if not authenticated
@@ -29,6 +30,7 @@ export default function ProductsPage() {
           id: Date.now(),
           title: p.title,
           price: p.price,
+          imageUrl: p.imageUrl,
           priority: p.priority as Product["priority"],
           canBuy: true,
         };
@@ -41,6 +43,7 @@ export default function ProductsPage() {
         name: p.title,
         price: Number(p.price) || 0,
         priority: p.priority,
+        imageUrl: p.imageUrl,
       };
 
       const res = await api.post("/products", body, {
@@ -150,6 +153,7 @@ export default function ProductsPage() {
             <ProductCard
               key={p.id}
               {...p}
+              imageUrl={p.imageUrl}
               price={typeof p.price === "string" ? Number(p.price) : p.price}
             />
           ))}
