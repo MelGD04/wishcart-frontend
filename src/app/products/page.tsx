@@ -6,30 +6,31 @@ import ProductCard from "@/components/products/ProductCard";
 import AddProductCard from "@/components/products/AddProductCard";
 import api from "@/lib/axios";
 import { LogIn, Plus } from "lucide-react";
+import useBudget from "@/hooks/useBudget";
 
 type Product = {
   id: number;
-  title: string;
-  price: string | number;
+  name: string;
+  price: number | string;
   imageUrl?: string;
   priority: "High" | "Medium" | "Low";
-  canBuy: boolean;
+  canBuy?: boolean;
 };
 
 export default function ProductsPage() {
   const { user } = useAuth();
+  const { balance, loading: budgetLoading, refresh: refreshBalance } = useBudget();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   // handler to add a new product from AddProductModal
-  const addProduct = async (p: { title: string; price: string; priority: string; imageUrl?: string }) => {
+  const addProduct = async (p: { name: string; price: string; priority: string; imageUrl?: string }) => {
     try {
       if (!user?.token) {
-        // fallback to local update if not authenticated
         const newProduct: Product = {
           id: Date.now(),
-          title: p.title,
-          price: p.price,
+          name: p.name,
+          price: Number(p.price) || 0,
           imageUrl: p.imageUrl,
           priority: p.priority as Product["priority"],
           canBuy: true,
@@ -38,9 +39,8 @@ export default function ProductsPage() {
         return;
       }
 
-      // backend expects fields: name (string) and price (number)
       const body = {
-        name: p.title,
+        name: p.name,
         price: Number(p.price) || 0,
         priority: p.priority,
         imageUrl: p.imageUrl,
@@ -50,8 +50,9 @@ export default function ProductsPage() {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 
-      // backend returns the saved product
       setProducts((prev) => [...prev, res.data]);
+      // optionally refresh budget if adding product should affect anything
+      refreshBalance();
     } catch (err) {
       console.error("Failed to create product", err);
     }
@@ -67,12 +68,18 @@ export default function ProductsPage() {
           return;
         }
 
-        // fetch from backend using JWT token
         const res = await api.get("/products", {
           headers: { Authorization: `Bearer ${user.token}` },
         });
 
-        if (mounted) setProducts(res.data || []);
+        if (mounted) {
+          // make sure price is numeric
+          const mapped = (res.data || []).map((p: any) => ({
+            ...p,
+            price: typeof p.price === "number" ? p.price : Number(p.price || 0),
+          }));
+          setProducts(mapped);
+        }
       } catch (err) {
         console.error("Failed to fetch products", err);
         if (mounted) setProducts([]);
@@ -88,7 +95,7 @@ export default function ProductsPage() {
     };
   }, [user]);
 
-  if (loading)
+  if (loading || budgetLoading)
     return (
       <div className="flex items-center justify-center py-24">
         <p className="text-center text-sm text-zinc-500">Loading products…</p>
@@ -121,6 +128,13 @@ export default function ProductsPage() {
     );
   }
 
+  // compute canBuy for each product using the single balance fetch
+  const productsWithCanBuy = products.map((p) => {
+    const numericPrice = typeof p.price === "number" ? p.price : Number(p.price || 0);
+    const available = typeof balance === "number" ? balance : 0;
+    return { ...p, canBuy: available >= numericPrice };
+  });
+
   return (
     <div className="w-[95%] max-w-5xl mx-auto px-6 pt-23 pb-8">
       <header className="mb-6 flex flex-col items-center text-center gap-2">
@@ -136,28 +150,27 @@ export default function ProductsPage() {
 
         <p className="text-lg text-zinc-500">Add the products you want</p>
       </header>
-      {products.length === 0 ? (
+
+      {productsWithCanBuy.length === 0 ? (
         <div className="flex items-center justify-center py-12">
           <div className="w-full max-w-sm">
             <AddProductCard onAdd={addProduct} />
           </div>
         </div>
       ) : (
-        // center the grid when there are few items so they appear centered below the navbar
-        <div
-          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ${
-            products.length <= 2 ? "justify-center" : ""
-          }`}
-        >
-          {products.map((p) => (
+        <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ${productsWithCanBuy.length <= 2 ? "justify-center" : ""}`}>
+          {productsWithCanBuy.map((p) => (
             <ProductCard
               key={p.id}
-              {...p}
+              id={p.id}
+              name={p.name}
+              price={p.price}
               imageUrl={p.imageUrl}
-              price={typeof p.price === "string" ? Number(p.price) : p.price}
+              priority={p.priority}
+              canBuy={p.canBuy}
             />
           ))}
-          {/* AddProductCard always at the end */}
+
           <AddProductCard onAdd={addProduct} />
         </div>
       )}

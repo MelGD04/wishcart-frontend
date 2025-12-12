@@ -7,7 +7,7 @@ import AddProductModal from "@/modals/AddProductModal";
 export default function AddProductCard({
   onAdd,
 }: {
-  onAdd?: (p: { title: string; price: string; priority: string; imageUrl?: string }) => void;
+  onAdd?: (p: { name: string; price: string; priority: string; imageUrl?: string }) => void;
 }) {
   const [showModal, setShowModal] = useState(false);
 

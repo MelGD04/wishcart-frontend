@@ -8,10 +8,10 @@ export default function AddProductModal({
 }: {
   onClose: () => void;
   onAdd?: (
-    p: { title: string; price: string; priority: string; imageUrl?: string }
+    p: { name: string; price: string; priority: string; imageUrl?: string }
   ) => Promise<void> | void;
 }) {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -32,8 +32,8 @@ export default function AddProductModal({
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const payload: { title: string; price: string; priority: string; imageUrl?: string } = {
-      title,
+    const payload: { name: string; price: string; priority: string; imageUrl?: string } = {
+      name,
       price,
       priority,
     };
@@ -59,9 +59,9 @@ export default function AddProductModal({
   <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
-            placeholder="Product title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Product name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-transparent text-sm"
             required
           />
