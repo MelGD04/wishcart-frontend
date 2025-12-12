@@ -7,6 +7,7 @@ import AddProductCard from "@/components/products/AddProductCard";
 import api from "@/lib/axios";
 import { LogIn, Plus } from "lucide-react";
 import useBudget from "@/hooks/useBudget";
+import useProductActions from "@/hooks/useProductActions";
 
 type Product = {
   id: number;
@@ -22,6 +23,18 @@ export default function ProductsPage() {
   const { balance, loading: budgetLoading, refresh: refreshBalance } = useBudget();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { deleteProduct } = useProductActions();
+
+const handleDelete = async (id: number) => {
+  if (!user?.token) return;
+
+  const ok = await deleteProduct(id, user.token);
+  if (ok) {
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+  }
+};
+
 
   // handler to add a new product from AddProductModal
   const addProduct = async (p: { name: string; price: string; priority: string; imageUrl?: string }) => {
@@ -168,6 +181,7 @@ export default function ProductsPage() {
               imageUrl={p.imageUrl}
               priority={p.priority}
               canBuy={p.canBuy}
+              onDelete={handleDelete}
             />
           ))}
 

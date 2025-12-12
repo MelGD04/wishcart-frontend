@@ -3,6 +3,7 @@
 
 import { useState, useRef } from "react";
 import { ShoppingCart, Check, Trash } from "lucide-react";
+import useProductActions from "@/hooks/useProductActions";
 
 type Props = {
   id: number;
@@ -11,6 +12,10 @@ type Props = {
   imageUrl?: string;
   priority?: "High" | "Medium" | "Low";
   canBuy?: boolean;
+
+  onDelete?: (id: number) => void;
+  onUpdate?: (id: number) => void;
+
 };
 
 export default function ProductCard({
@@ -20,6 +25,8 @@ export default function ProductCard({
   imageUrl,
   priority,
   canBuy,
+  onDelete,
+  onUpdate
 }: Props) {
   const displayTitle = name; // ← esto funciona bien
   const [image, setImage] = useState<string | null>(imageUrl ?? null);
@@ -128,12 +135,76 @@ export default function ProductCard({
         <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleImageChange} />
       </div>
 
-      {/* TITLE */}
-      {displayTitle && (
-  <div className="w-full text-sm sm:text-base font-semibold capitalize truncate text-center sm:text-left">
+      {/* TITLE + ACTION BUTTONS */}
+<div className="flex items-center justify-between w-full mt-1">
+  
+  {/* TITLE LEFT */}
+  <div className="text-sm sm:text-base font-semibold capitalize truncate">
     {displayTitle}
   </div>
-)}
+
+  {/* BUTTONS RIGHT */}
+  <div className="flex items-center gap-2">
+
+    {/* EDIT BUTTON */}
+    <button
+      className="
+        w-8 h-8 flex items-center justify-center rounded-full 
+        bg-blue-500/20 hover:bg-blue-500/40 
+        text-blue-400 hover:text-blue-300 
+        transition
+      "
+      title="Edit Product"
+      onClick={() => console.log('edit product', id)}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+      </svg>
+    </button>
+
+    {/* DELETE BUTTON */}
+    <button
+      className="
+        w-8 h-8 flex items-center justify-center rounded-full 
+        bg-red-500/20 hover:bg-red-500/40 
+        text-red-400 hover:text-red-300 
+        transition
+      "
+      title="Delete Product"
+       onClick={() => onDelete?.(id)}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+        <path d="M10 11v6" />
+        <path d="M14 11v6" />
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      </svg>
+    </button>
+
+  </div>
+</div>
+
+
 
       {/* PRIORITY + CAN BUY */}
       {(priority || typeof canBuy !== "undefined") && (
@@ -153,13 +224,16 @@ export default function ProductCard({
           )}
 
           {typeof canBuy !== "undefined" && (
-            <span
-              className={`flex-1 text-center px-2 py-1 rounded-full font-medium text-[10px] sm:text-xs border-2 ${
-                canBuy ? "border-green-600 text-green-600" : "border-gray-500 text-gray-500"
-              }`}
+            <span className={`flex-1 text-center px-2 py-1 rounded-full font-medium border-2
+                ${canBuy 
+                ? "text-[10px] sm:text-xs border-green-600 text-green-600"
+                : "text-[8px] sm:text-[10px] border-gray-500 text-gray-500"
+                }
+          `}
             >
-              {canBuy ? "Buy Now" : "Not Available"}
+            {canBuy ? "Buy Now" : "Not Available"}
             </span>
+
           )}
         </div>
       )}
