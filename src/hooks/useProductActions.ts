@@ -1,5 +1,11 @@
-// src/hooks/useProductActions.ts
 import api from "@/lib/axios";
+
+export type UpdateProductPayload = {
+  name?: string;
+  price?: number | string;
+  priority?: "High" | "Medium" | "Low";
+  imageUrl?: string | null;
+};
 
 export default function useProductActions() {
   const deleteProduct = async (id: number, token: string) => {
@@ -14,7 +20,11 @@ export default function useProductActions() {
     }
   };
 
-  const updateProduct = async (id: number, data: any, token: string) => {
+  const updateProduct = async (
+    id: number,
+    data: UpdateProductPayload,
+    token: string
+  ) => {
     try {
       await api.patch(`/products/${id}`, data, {
         headers: { Authorization: `Bearer ${token}` },
@@ -28,3 +38,4 @@ export default function useProductActions() {
 
   return { deleteProduct, updateProduct };
 }
+

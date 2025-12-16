@@ -1,9 +1,10 @@
-// src/components/products/ProductCard.tsx
 "use client";
 
 import { useState, useRef } from "react";
 import { ShoppingCart, Check, Trash } from "lucide-react";
-import useProductActions from "@/hooks/useProductActions";
+import UpdateProductModal from "@/modals/UpdateProductModal";
+import { useAuth } from "@/hooks/useAuth";
+
 
 type Props = {
   id: number;
@@ -14,7 +15,7 @@ type Props = {
   canBuy?: boolean;
 
   onDelete?: (id: number) => void;
-  onUpdate?: (id: number) => void;
+  onUpdated?: (product: any) => void;
 
 };
 
@@ -26,14 +27,20 @@ export default function ProductCard({
   priority,
   canBuy,
   onDelete,
-  onUpdate
+  onUpdated
 }: Props) {
-  const displayTitle = name; // ← esto funciona bien
+  const displayTitle = name;
   const [image, setImage] = useState<string | null>(imageUrl ?? null);
   const [bought, setBought] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
+  const [showEdit, setShowEdit] = useState(false);
+
+
 
   const handleImageClick = () => fileInputRef.current?.click();
+
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -148,6 +155,7 @@ export default function ProductCard({
 
     {/* EDIT BUTTON */}
     <button
+      onClick={() => setShowEdit(true)}
       className="
         w-8 h-8 flex items-center justify-center rounded-full 
         bg-blue-500/20 hover:bg-blue-500/40 
@@ -155,7 +163,7 @@ export default function ProductCard({
         transition
       "
       title="Edit Product"
-      onClick={() => console.log('edit product', id)}
+      
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -259,6 +267,23 @@ export default function ProductCard({
           {bought ? "Bought" : canBuy ? "Add" : "Unavailable"}
         </button>
       </div>
+
+      {showEdit && (
+        <UpdateProductModal
+          id={id}
+          initialName={name}
+          initialPrice={price}
+          initialPriority={priority}
+          initialImageUrl={image}
+          onClose={() => setShowEdit(false)}
+          onUpdated={(updatedProduct) => {
+      onUpdated?.(updatedProduct);
+      setShowEdit(false);
+    }}
+        />
+      )}
     </div>
+
+    
   );
 }
