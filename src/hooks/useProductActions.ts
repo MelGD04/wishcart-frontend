@@ -21,20 +21,22 @@ export default function useProductActions() {
   };
 
   const updateProduct = async (
-    id: number,
-    data: UpdateProductPayload,
-    token: string
-  ) => {
-    try {
-      await api.patch(`/products/${id}`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return true;
-    } catch (err) {
-      console.error("Error updating product:", err);
-      return false;
-    }
-  };
+  id: number,
+  data: UpdateProductPayload,
+  token: string
+) => {
+  try {
+    const res = await api.patch(`/products/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return res.data; //producto actualizado
+  } catch (err) {
+    console.error("Error updating product:", err);
+    throw err;
+  }
+};
+
 
   return { deleteProduct, updateProduct };
 }

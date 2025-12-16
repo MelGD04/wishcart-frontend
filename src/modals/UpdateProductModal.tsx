@@ -20,6 +20,7 @@ export default function UpdateProductModal({
   initialPrice,
   initialPriority = "Medium",
   onClose,
+  onUpdated
 }: Props) {
   const [name, setName] = useState(initialName);
   const [price, setPrice] = useState(String(initialPrice ?? ""));
@@ -31,30 +32,28 @@ export default function UpdateProductModal({
   const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    try {
-      if (!user?.token) throw new Error("Not authenticated");
+  try {
+    if (!user?.token) throw new Error("Not authenticated");
 
-      await updateProduct(
-        id,
-        {
-          name,
-          price,
-          priority,
-        },
-        user.token
-      );
+    const updatedProduct = await updateProduct(
+      id,
+      { name, price, priority },
+      user.token
+    );
 
-      onClose();
-    } catch (err: any) {
-      setError(err?.message || "Failed to update product");
-    } finally {
-      setLoading(false);
-    }
-  };
+    onUpdated(updatedProduct); // producto real
+    onClose();
+  } catch (err: any) {
+    setError(err?.message || "Failed to update product");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">

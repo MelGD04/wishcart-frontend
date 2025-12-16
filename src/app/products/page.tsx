@@ -35,6 +35,20 @@ const handleDelete = async (id: number) => {
   }
 };
 
+const handleUpdated = (updated: Product) => {
+  setProducts((prev) =>
+    prev.map((p) =>
+      p.id === updated.id
+        ? {
+            ...p,
+            ...updated,
+            price: Number(updated.price), // seguridad
+          }
+        : p
+    )
+  );
+};
+
 
   // handler to add a new product from AddProductModal
   const addProduct = async (p: { name: string; price: string; priority: string; imageUrl?: string }) => {
@@ -182,6 +196,7 @@ const handleDelete = async (id: number) => {
               priority={p.priority}
               canBuy={p.canBuy}
               onDelete={handleDelete}
+              onUpdated={handleUpdated}
             />
           ))}
 
