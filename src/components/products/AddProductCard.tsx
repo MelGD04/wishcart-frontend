@@ -7,7 +7,12 @@ import AddProductModal from "@/modals/AddProductModal";
 export default function AddProductCard({
   onAdd,
 }: {
-  onAdd?: (p: { name: string; price: string; priority: string; imageUrl?: string }) => void;
+  onAdd?: (p: {
+    name: string;
+    price: string;
+    priority: string;
+    imageUrl?: string;
+  }) => void;
 }) {
   const [showModal, setShowModal] = useState(false);
 
@@ -15,37 +20,41 @@ export default function AddProductCard({
     <>
       <button
         onClick={() => setShowModal(true)}
-        className={
-          "relative flex flex-col gap-3 p-3 sm:p-4 w-full rounded-xl shadow-lg border border-dashed cursor-pointer transition-all duration-300 hover:scale-[1.02]"
-        }
-        style={{
-          backgroundColor: "var(--card-bg)",
-          borderColor: "var(--card-border)",
-          boxShadow: `0 8px 20px var(--card-shadow)`,
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
+        className="
+          relative
+          w-[232px]
+          h-[306px]
+          rounded-xl
+          border
+          border-dashed
+          border-zinc-300/50
+          bg-white/10
+          backdrop-blur-md
+          cursor-pointer
+          transition-all
+          duration-300
+          hover:scale-[1.02]
+          hover:bg-white/15
+          flex
+          items-center
+          justify-center
+          text-center
+        "
       >
-        {/* Top placeholder matches ProductCard image area so heights align */}
-        <div className="relative z-10 w-full h-24 sm:h-28 md:h-32 bg-zinc-100 rounded-md overflow-hidden flex items-center justify-center">
-          <PlusCircle className="w-10 h-10 text-blue-500 opacity-80" />
-        </div>
-
-        {/* Title area matches ProductCard title styling */}
-        <div className="w-full text-sm sm:text-base font-semibold capitalize truncate text-center sm:text-left">
-          Add New Product
+        <div className="flex flex-col items-center gap-2">
+          <PlusCircle className="w-12 h-12 text-blue-500 opacity-80" />
+          <span className="text-sm sm:text-base font-semibold text-zinc-700 dark:text-zinc-200">
+            Add Product
+          </span>
         </div>
       </button>
 
       {showModal && (
         <AddProductModal
           onClose={() => setShowModal(false)}
-          onAdd={(p) => {
-            if (onAdd) onAdd(p);
-          }}
+          onAdd={(p) => onAdd?.(p)}
         />
       )}
     </>
   );
 }
-
